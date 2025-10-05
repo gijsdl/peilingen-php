@@ -4,6 +4,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 function addPoll(): void
 {
+
     $reader = new Xlsx();
     $reader->setReadDataOnly(true);
     $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
@@ -52,6 +53,7 @@ function addPoll(): void
         }
 
     }
+
 }
 
 function checkPollId(string $name): mixed
@@ -108,4 +110,21 @@ function createPartyPoll(int $partyId, int $pollId, int $chairs): void
     $query->bindParam('pollId', $pollId);
     $query->bindParam('chairs', $chairs);
     $query->execute();
+}
+
+function getAllPolls(): array
+{
+    global $db;
+    $query = $db->prepare('SELECT * FROM poll');
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getAllPartyOrdered($id): array
+{
+    global $db;
+    $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
+    $query->bindParam('id', $id);
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_ASSOC);
 }
