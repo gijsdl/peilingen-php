@@ -1,59 +1,50 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-
 function addPoll(): void
 {
+    try {
+        $polls = json_decode(file_get_contents('php://input'));
 
-    $reader = new Xlsx();
-    $reader->setReadDataOnly(true);
-    $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
-
-    $spreadsheetCount = $spreadsheet->getSheetCount();
-
-    for ($i = 0; $i < $spreadsheetCount; $i++) {
-        $sheet = $spreadsheet->getSheet($i);
-//        var_dump($sheet->getTitle());
-        $pollName = $sheet->getTitle();
-        $pollId = checkPollId($pollName);
-        $pollFound = true;
-
-        if (!$pollId) {
-            createPoll($pollName);
-            $pollFound = false;
+        foreach ($polls as $poll) {
+            $pollName = $poll->poll;
             $pollId = checkPollId($pollName);
-        }
+            $pollFound = true;
 
-        $pollId = $pollId['id'];
-
-        if ($pollFound) {
-            removeOldData($pollId);
-        }
-        $dataArray = $sheet->toArray();
-        $first = true;
-        foreach ($dataArray as $data) {
-            if ($first) {
-                $first = false;
-                continue;
+            if (!$pollId) {
+                createPoll($pollName);
+                $pollFound = false;
+                $pollId = checkPollId($pollName);
             }
-            $partyName = $data[0];
-            if (!$partyName) {
-                break;
-            }
-            $partyId = checkPartyId($partyName);
 
-            if (!$partyId) {
-                createParty($partyName);
+            $pollId = $pollId['id'];
+
+            if ($pollFound) {
+                removeOldData($pollId);
+            }
+
+            $dataArray = $poll->parties;
+            foreach ($dataArray as $data) {
+                $partyName = $data->Partij;
+                if (!$partyName) {
+                    break;
+                }
                 $partyId = checkPartyId($partyName);
+
+                if (!$partyId) {
+                    createParty($partyName);
+                    $partyId = checkPartyId($partyName);
+                }
+                $partyId = $partyId['id'];
+                $chairs = $data->Zetels;
+                createPartyPoll($partyId, $pollId, $chairs);
             }
-
-            $partyId = $partyId['id'];
-            $chairs = $data[1];
-            createPartyPoll($partyId, $pollId, $chairs);
         }
-
+        http_response_code(200);
+        echo json_encode(['status' => 'OK']);
+    } catch (PDOException $e){
+        http_response_code(500);
+        echo json_encode(['status' => 'error']);
     }
-
 }
 
 function checkPollId(string $name): mixed

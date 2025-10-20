@@ -17,6 +17,11 @@ include_once 'header.php';
         </form>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.16.8/dist/xlsx.full.min.js"
+        integrity="sha256-Ic7HP804IrYks4vUqX1trFF1Nr33RjONeJESZnYxsOY="
+        crossorigin="anonymous">
+</script>
+<script src="js/add-poll.js"
 
 <?php
 include_once 'footer.php';

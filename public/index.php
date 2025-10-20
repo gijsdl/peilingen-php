@@ -1,7 +1,6 @@
 <?php
 
 require '../modules/db.php';
-require '../vendor/autoload.php';
 require '../modules/poll.php';
 require '../modules/common.php';
 
@@ -12,18 +11,13 @@ session_start();
 
 switch ($params[1]) {
     case 'new-poll' :
-
-        if (isset($_POST["submit"])) {
-            if ($_FILES['file']['tmp_name'] === "") {
-                addFlash('danger', 'Er is geen bestand toegevoegd!');
-            } else {
-                addPoll();
-                addFlash('success', 'De poll is toegevoegd');
-                header('Location: /');
-            }
-        }
-
         include_once "../template/add-poll.php";
+        break;
+    case 'add-poll':
+        header('Content-type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            addPoll();
+        }
         break;
     case 'get-polls':
         header('Content-type: application/json');
