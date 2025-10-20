@@ -9,17 +9,15 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
     <title>Document</title>
+    <script src="js/message.js" defer></script>
 </head>
 <body class="bg-info-subtle">
 <div class="container">
     <div class="row">
-        <div class="col mb-3">
-            <?php if (!empty($_SESSION['flash'])): ?>
-                <div class="alert alert-<?= $_SESSION['flash']['class'] ?> alert-dismissible" role="alert">
-                    <?= $_SESSION['flash']['message'] ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php unset($_SESSION['flash']) ?>
-            <?php endif; ?>
+        <div class="col mb-3 message hidden">
+            <div class="alert alert-dismissible" role="alert">
+                <span>message</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
     </div>

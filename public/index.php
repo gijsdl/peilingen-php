@@ -2,12 +2,10 @@
 
 require '../modules/db.php';
 require '../modules/poll.php';
-require '../modules/common.php';
 
 $request = $_SERVER['REQUEST_URI'];
 $params = explode("/", $request);
 $title = "Peilingen";
-session_start();
 
 switch ($params[1]) {
     case 'new-poll' :

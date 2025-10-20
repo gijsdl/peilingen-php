@@ -43,21 +43,14 @@ function submitForm(e) {
                 const content = await rawResponse.json();
 
                 if(content.status === 'OK'){
-                    alert('Poll toegevoegd');
+                    window.location.href = '/';
+                    localStorage.setItem('message', JSON.stringify(['success', 'Het uploaden is gelukt.']));
                 } else{
-                    alert('Niet gelukt om de poll toe te voegen');
+                    localStorage.setItem('message', JSON.stringify(['danger', 'Het uploaden is mislukt.']));
+                    showMessage();
                 }
 
             })();
-
-            await fetch('/add-poll', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(polls)
-            });
         }
     }
 }
