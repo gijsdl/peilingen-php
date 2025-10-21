@@ -12,15 +12,35 @@
     <script src="js/message.js" defer></script>
 </head>
 <body class="bg-info-subtle">
-<div class="container">
-    <div class="row">
-        <?php if (!empty($_SESSION['flash'])): ?>
-        <div class="col mb-3 message">
-            <div class="alert alert-<?= $_SESSION['flash']['class'] ?> alert-dismissible" role="alert">
-                <?= $_SESSION['flash']['message'] ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link text-light" href="/">Home</a>
+                <?php if (!isset($_SESSION['user'])): ?>
+                    <a class="nav-link text-light" href="/login">Login</a>
+                <?php else: ?>
+                    <a class="nav-link text-light" href="/new-poll">Peiling toevoegen</a>
+                    <a class="nav-link text-light" href="/make-user">Gebruiker aanmaken</a>
+                    <a class="nav-link text-light" href="/logout">Logout</a>
+                <?php endif; ?>
             </div>
         </div>
+    </div>
+</nav>
+<div class="container mb-5">
+    <div class="row">
+        <?php if (!empty($_SESSION['flash'])): ?>
+            <div class="col mb-3 message">
+                <div class="alert alert-<?= $_SESSION['flash']['class'] ?> alert-dismissible" role="alert">
+                    <?= $_SESSION['flash']['message'] ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
             <?php unset($_SESSION['flash']) ?>
         <?php endif; ?>
         <div class="col mb-3 message hidden">

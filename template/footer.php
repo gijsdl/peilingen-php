@@ -3,5 +3,12 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous">
 </script>
+<footer>
+    <div class="row bg-primary justify-content-center fixed-bottom">
+        <div class="col-2">
+            <p class="text-white">&copy; Gijs de Lange</p>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

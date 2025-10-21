@@ -33,6 +33,7 @@ function showParties() {
     partiesField.removeChild(partiesField.firstChild);
     const wrapperRow = document.createElement('div');
     wrapperRow.classList.add('row');
+    wrapperRow.classList.add('justify-content-center');
     partiesField.appendChild(wrapperRow);
     wrapperRow.appendChild(polls[0].createPartyHTML());
     wrapperRow.appendChild(showPolls(wrapperRow));
@@ -105,6 +106,7 @@ function calculateAndShow() {
 
     const wrapperRow = document.createElement('div');
     wrapperRow.classList.add('row');
+    wrapperRow.classList.add('justify-content-center');
     resultField.appendChild(wrapperRow);
 
     polls.forEach((poll) => {

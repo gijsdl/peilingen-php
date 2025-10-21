@@ -3,7 +3,7 @@ include_once 'header.php';
 ?>
 
 
-<div class="row">
+<div class="row justify-content-center mt-3">
     <div class="col">
         <form class="needs-validation" novalidate method="post" enctype="multipart/form-data">
             <div class="mb-3">
