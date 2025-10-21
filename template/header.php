@@ -14,6 +14,15 @@
 <body class="bg-info-subtle">
 <div class="container">
     <div class="row">
+        <?php if (!empty($_SESSION['flash'])): ?>
+        <div class="col mb-3 message">
+            <div class="alert alert-<?= $_SESSION['flash']['class'] ?> alert-dismissible" role="alert">
+                <?= $_SESSION['flash']['message'] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+            <?php unset($_SESSION['flash']) ?>
+        <?php endif; ?>
         <div class="col mb-3 message hidden">
             <div class="alert alert-dismissible" role="alert">
                 <span>message</span>
