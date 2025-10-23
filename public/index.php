@@ -38,6 +38,9 @@ switch ($params[1]) {
         include_once '../template/login.php';
         break;
     case 'make-user':
+        if (!checkUser($_SESSION['user'])){
+            header('location: /login');
+        }
         if (isset($_POST['submit'])){
             makeUser();
         }

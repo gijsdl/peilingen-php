@@ -116,19 +116,30 @@ function createPartyPoll(int $partyId, int $pollId, int $chairs): void
     $query->execute();
 }
 
-function getAllPolls(): array
+function getAllPolls(): string|array
 {
-    global $db;
-    $query = $db->prepare('SELECT * FROM poll');
-    $query->execute();
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        global $db;
+        $query = $db->prepare('SELECT * FROM poll');
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (PDOException $e){
+        http_response_code(500);
+        return ['status' =>'error'];
+    }
+
 }
 
-function getAllPartyOrdered($id): array
+function getAllPartyOrdered($id): string|array
 {
-    global $db;
-    $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
-    $query->bindParam('id', $id);
-    $query->execute();
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        global $db;
+        $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
+        $query->bindParam('id', $id);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (PDOException $e){
+        http_response_code(500);
+        return 'error';
+    }
 }

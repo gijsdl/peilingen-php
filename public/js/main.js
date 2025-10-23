@@ -9,22 +9,29 @@ calculateBtn.addEventListener('click', calculateAndShow);
 
 
 fetch('/get-polls')
-    .then(data => data.json())
-    .then(jsonData => createPoll(jsonData));
+    .then(data =>  data.json())
+    .then(jsonData => createPoll(jsonData))
+    .catch(()=>{
+        localStorage.setItem('message', JSON.stringify(['danger', 'Er is wat mis gegaan met het laden']));
+        showMessage();
+    });
 
 function createPoll(pollsData) {
-
     Promise.all(pollsData.map(async pollData => {
         const poll = new Poll(pollData.name);
         polls.push(poll);
         await fetch('/get-party/' + pollData.id)
             .then(data => data.json())
-            .then(jsonData => poll.createParties(jsonData));
+            .then(jsonData => poll.createParties(jsonData))
+            .catch(()=>{
+                localStorage.setItem('message', JSON.stringify(['danger', 'Er is wat mis gegaan met het laden']));
+                showMessage();
+            });
     }))
         .then(() => {
             calculateAndShow();
             showParties();
-        })
+        });
 
 }
 
