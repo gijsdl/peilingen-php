@@ -3,9 +3,13 @@
 function addPoll(): void
 {
     try {
-        $polls = json_decode(file_get_contents('php://input'));
-
-        foreach ($polls as $poll) {
+        $object = json_decode(file_get_contents('php://input'));
+        if (!checkToken($object->token)) {
+            http_response_code(500);
+            echo json_encode(['status' => 'AUTHERROR']);
+            return;
+        }
+        foreach ($object->polls as $poll) {
             $pollName = $poll->poll;
             $pollId = checkPollId($pollName);
             $pollFound = true;
@@ -41,10 +45,19 @@ function addPoll(): void
         }
         http_response_code(200);
         echo json_encode(['status' => 'OK']);
-    } catch (PDOException $e){
+    } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error']);
     }
+}
+
+function checkToken($token): mixed
+{
+    global $db;
+    $query = $db->prepare('SELECT token FROM token where token = :token');
+    $query->bindParam('token', $token);
+    $query->execute();
+    return $query->fetch(PDO::FETCH_ASSOC);
 }
 
 function checkPollId(string $name): mixed

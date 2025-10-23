@@ -33,16 +33,20 @@
     </div>
 </nav>
 <div class="container mb-5">
-    <div class="row">
-        <?php if (!empty($_SESSION['flash'])): ?>
-            <div class="col mb-3 message">
-                <div class="alert alert-<?= $_SESSION['flash']['class'] ?> alert-dismissible" role="alert">
-                    <?= $_SESSION['flash']['message'] ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <?php if (!empty($_SESSION['flash'])): ?>
+        <?php foreach ($_SESSION['flash'] as $flash): ?>
+            <div class="row">
+                <div class="col mb-3 message">
+                    <div class="alert alert-<?= $flash['class'] ?> alert-dismissible" role="alert">
+                        <?= $flash['message'] ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
             </div>
-            <?php unset($_SESSION['flash']) ?>
-        <?php endif; ?>
+        <?php endforeach ?>
+        <?php unset($_SESSION['flash']) ?>
+    <?php endif; ?>
+    <div class="row">
         <div class="col mb-3 message hidden">
             <div class="alert alert-dismissible" role="alert">
                 <span>message</span>

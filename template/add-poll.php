@@ -21,7 +21,7 @@ include_once 'header.php';
         integrity="sha256-Ic7HP804IrYks4vUqX1trFF1Nr33RjONeJESZnYxsOY="
         crossorigin="anonymous">
 </script>
-<script src="js/add-poll.js"
+<script src="js/add-poll.js"></script>
 
 <?php
 include_once 'footer.php';

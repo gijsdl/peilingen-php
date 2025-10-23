@@ -8,6 +8,7 @@ $request = $_SERVER['REQUEST_URI'];
 $params = explode("/", $request);
 $title = "Peilingen";
 session_start();
+removeOldTokens();
 
 switch ($params[1]) {
     case 'new-poll' :
