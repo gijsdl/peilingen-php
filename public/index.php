@@ -15,6 +15,7 @@ switch ($params[1]) {
         if (!checkUser($_SESSION['user'])){
             header('location: /login');
         }
+        $title .= ' | nieuwe peiling';
         include_once "../template/add-poll.php";
         break;
     case 'add-poll':
@@ -32,12 +33,14 @@ switch ($params[1]) {
         echo json_encode(getAllPartyOrdered($params[2]));
         break;
     case 'login':
+        $title .= ' | login';
         if (isset($_POST['submit'])){
             login();
         }
         include_once '../template/login.php';
         break;
     case 'make-user':
+        $title .= ' | gebruiker aanmaken';
         if (!checkUser($_SESSION['user'])){
             header('location: /login');
         }
@@ -50,6 +53,7 @@ switch ($params[1]) {
         logout();
         break;
     default:
+        $title .= ' | home';
         include_once "../template/home.php";
         break;
 }
