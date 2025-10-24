@@ -2,6 +2,7 @@ const partiesWrapper = document.querySelector('.parties-wrapper');
 const partiesField = document.querySelector('.parties');
 const calculateBtn = document.querySelector('.calculate');
 const resultField = document.querySelector('.result');
+const emptyField = document.querySelector('.empty');
 
 let polls = [];
 
@@ -17,6 +18,10 @@ fetch('/get-polls')
     });
 
 function createPoll(pollsData) {
+    if (pollsData.length < 1){
+        emptyField.classList.remove('hidden');
+        return;
+    }
     Promise.all(pollsData.map(async pollData => {
         const poll = new Poll(pollData.name);
         polls.push(poll);
