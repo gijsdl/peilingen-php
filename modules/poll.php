@@ -1,59 +1,63 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-
 function addPoll(): void
 {
-
-    $reader = new Xlsx();
-    $reader->setReadDataOnly(true);
-    $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
-
-    $spreadsheetCount = $spreadsheet->getSheetCount();
-
-    for ($i = 0; $i < $spreadsheetCount; $i++) {
-        $sheet = $spreadsheet->getSheet($i);
-//        var_dump($sheet->getTitle());
-        $pollName = $sheet->getTitle();
-        $pollId = checkPollId($pollName);
-        $pollFound = true;
-
-        if (!$pollId) {
-            createPoll($pollName);
-            $pollFound = false;
+    try {
+        $object = json_decode(file_get_contents('php://input'));
+        if (!checkToken($object->token)) {
+            http_response_code(500);
+            echo json_encode(['status' => 'AUTHERROR']);
+            return;
+        }
+        foreach ($object->polls as $poll) {
+            $pollName = $poll->poll;
             $pollId = checkPollId($pollName);
-        }
+            $pollFound = true;
 
-        $pollId = $pollId['id'];
-
-        if ($pollFound) {
-            removeOldData($pollId);
-        }
-        $dataArray = $sheet->toArray();
-        $first = true;
-        foreach ($dataArray as $data) {
-            if ($first) {
-                $first = false;
-                continue;
+            if (!$pollId) {
+                createPoll($pollName);
+                $pollFound = false;
+                $pollId = checkPollId($pollName);
             }
-            $partyName = $data[0];
-            if (!$partyName) {
-                break;
-            }
-            $partyId = checkPartyId($partyName);
 
-            if (!$partyId) {
-                createParty($partyName);
+            $pollId = $pollId['id'];
+
+            if ($pollFound) {
+                removeOldData($pollId);
+            }
+
+            $dataArray = $poll->parties;
+            foreach ($dataArray as $data) {
+                $partyName = $data->Partij;
+                if (!$partyName) {
+                    break;
+                }
                 $partyId = checkPartyId($partyName);
+
+                if (!$partyId) {
+                    createParty($partyName);
+                    $partyId = checkPartyId($partyName);
+                }
+                $partyId = $partyId['id'];
+                $chairs = $data->Zetels;
+                createPartyPoll($partyId, $pollId, $chairs);
             }
-
-            $partyId = $partyId['id'];
-            $chairs = $data[1];
-            createPartyPoll($partyId, $pollId, $chairs);
         }
-
+        http_response_code(200);
+        echo json_encode(['status' => 'OK']);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error']);
     }
+}
 
+function checkToken($token): mixed
+{
+    global $db;
+    $query = $db->prepare('SELECT token FROM token where token = :token');
+    $query->bindParam('token', $token);
+    $query->execute();
+    return $query->fetch(PDO::FETCH_ASSOC);
 }
 
 function checkPollId(string $name): mixed
@@ -112,19 +116,30 @@ function createPartyPoll(int $partyId, int $pollId, int $chairs): void
     $query->execute();
 }
 
-function getAllPolls(): array
+function getAllPolls(): string|array
 {
-    global $db;
-    $query = $db->prepare('SELECT * FROM poll');
-    $query->execute();
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        global $db;
+        $query = $db->prepare('SELECT * FROM poll');
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (PDOException $e){
+        http_response_code(500);
+        return ['status' =>'error'];
+    }
+
 }
 
-function getAllPartyOrdered($id): array
+function getAllPartyOrdered($id): string|array
 {
-    global $db;
-    $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
-    $query->bindParam('id', $id);
-    $query->execute();
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        global $db;
+        $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
+        $query->bindParam('id', $id);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (PDOException $e){
+        http_response_code(500);
+        return 'error';
+    }
 }

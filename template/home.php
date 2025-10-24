@@ -11,13 +11,13 @@ global $polls;
     </div>
 </div>
 
-<div class="row parties-wrapper hidden">
-    <div class="col-6">
+<div class="row parties-wrapper justify-content-center hidden">
+    <div class="col-4">
         <div class="parties">
 
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-1">
         <button class="btn btn-primary calculate">Bereken</button>
     </div>
 </div>

@@ -12,12 +12,6 @@ class Poll {
         });
     }
 
-    createPartiesFromJson(parties) {
-        parties.forEach((party) => {
-            this.parties.push(new Party(party.name, party.seats, party.enabled));
-        });
-    }
-
     createPartyHTML() {
 
         const wrapperCol = document.createElement('div');
