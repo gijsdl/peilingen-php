@@ -22,6 +22,12 @@ global $polls;
     </div>
 </div>
 
+<div class="row justify-content-center empty hidden">
+    <div class="col-8 d-flex justify-content-center">
+        <h2 class="text-danger">Er is op dit moment nog geen poll toegevoegd</h2>
+    </div>
+</div>
+
 <script src="js/Party.js"></script>
 <script src="js/Poll.js"></script>
 <script src="js/main.js"></script>

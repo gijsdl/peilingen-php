@@ -27,6 +27,7 @@
                 <?php else: ?>
                     <a class="nav-link text-light" href="/new-poll">Peiling toevoegen</a>
                     <a class="nav-link text-light" href="/make-user">Gebruiker aanmaken</a>
+                    <a class="nav-link text-light" href="/change-password">wachtwoord aanpassen</a>
                     <a class="nav-link text-light" href="/logout">Logout</a>
                 <?php endif; ?>
             </div>

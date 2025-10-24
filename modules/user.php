@@ -151,3 +151,47 @@ function removeCookieToken(): void
         setcookie('token', '', time() - 3600, '/');
     }
 }
+
+function changePassword(): void
+{
+    $oldPassword = $_POST['old'];
+    $password = $_POST['password'];
+    $repeat = $_POST['repeat'];
+
+    if (empty($oldPassword) || empty($password) || empty($repeat)){
+        addFlash('danger', 'Vul alle velden in');
+        return;
+    }
+
+    $user = checkUser($_SESSION['user']);
+    global $db;
+    $query = $db->prepare('SELECT password FROM user WHERE id= :id');
+    $query->bindParam('id',$user['id']);
+    $query->execute();
+    $dbPassword = $query->fetch(PDO::FETCH_ASSOC)['password'];
+
+    if (!password_verify($oldPassword, $dbPassword)) {
+        addFlash('danger', 'Het oude wachtwoord is niet correct');
+        return;
+    }
+
+    if ($password !== $repeat){
+        addFlash('danger', 'De nieuwe wachtwoorden zijn niet gelijk');
+        return;
+    }
+
+    $password = password_hash($password, PASSWORD_BCRYPT, ['cost' =>13]);
+
+    global $db;
+    try {
+        $query = $db->prepare('UPDATE user SET password = :password WHERE id = :id');
+        $query->bindParam('password', $password);
+        $query->bindParam('id', $user['id']);
+        $query->execute();
+        addFlash('success', 'Het wachtoord is gewijzigd');
+        header('location: /new-poll');
+        exit();
+    } catch (PDOException $e){
+        addFlash('danger', $e->getMessage());
+    }
+}
