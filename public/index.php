@@ -49,6 +49,16 @@ switch ($params[1]) {
         }
         include_once '../template/make-user.php';
         break;
+    case 'change-password':
+        $title .= ' | wachtwoord aanpassen';
+        if (!checkUser($_SESSION['user'])){
+            header('location: /login');
+        }
+        if (isset($_POST['submit'])){
+            changePassword();
+        }
+        include_once '../template/change-password.php';
+        break;
     case 'logout':
         logout();
         break;
