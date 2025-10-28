@@ -125,16 +125,18 @@ function calculateAndShow() {
         if (poll.enabled) {
             const governingParties = [];
             let seats = 0;
+            let firstChamberSeats =0
             let i = 0;
             while (seats < 75 && i < poll.parties.length) {
                 const party = poll.parties[i];
                 if (party.enabled) {
                     governingParties.push(party);
                     seats += parseInt(party.seats);
+                    firstChamberSeats += parseInt(party.firstChamberSeats);
                 }
                 i++;
             }
-            wrapperRow.appendChild(poll.createResultHTML(governingParties, seats));
+            wrapperRow.appendChild(poll.createResultHTML(governingParties, seats, firstChamberSeats));
         }
     });
 }

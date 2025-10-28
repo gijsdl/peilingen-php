@@ -59,7 +59,7 @@ class Poll {
         return checkWrapper;
     }
 
-    createResultHTML(governingParties, total) {
+    createResultHTML(governingParties, total, totalFirstChamber) {
 
         const wrapperCol = document.createElement('div');
         wrapperCol.classList.add('col-3');
@@ -129,7 +129,7 @@ class Poll {
         td.textContent = total;
         trTotal.appendChild(td);
         const tdTotal = document.createElement('td');
-        tdTotal.textContent = (total / 150 * 100).toFixed(2).replace(".", ",") + "%";
+        tdTotal.textContent = (totalFirstChamber / 75 * 100).toFixed(2).replace(".", ",") + "%";
         trTotal.appendChild(tdTotal);
 
 
