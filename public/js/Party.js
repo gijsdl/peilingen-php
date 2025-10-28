@@ -1,8 +1,9 @@
 class Party {
-    constructor(name, seats, enabled = true) {
+    constructor(name, seats, enabled = true, firstChamberSeats) {
         this.name = name;
         this.seats = seats;
         this.enabled = enabled;
+        this.firstChamberSeats = firstChamberSeats;
     }
 
     createCheckElement() {
@@ -34,7 +35,7 @@ class Party {
         tdChairs.textContent = this.seats;
         tr.appendChild(tdChairs);
         const tdPercent = document.createElement('td');
-        tdPercent.textContent = (this.seats / 150 * 100).toFixed(2).replace(".", ",") + "%";
+        tdPercent.textContent = (this.firstChamberSeats / 75 * 100).toFixed(2).replace(".", ",") + "%";
         tr.appendChild(tdPercent);
         return tr;
     }
