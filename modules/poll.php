@@ -11,40 +11,52 @@ function addPoll(): void
         }
         foreach ($object->polls as $poll) {
             $pollName = $poll->poll;
-            $pollId = checkPollId($pollName);
-            $pollFound = true;
-
-            if (!$pollId) {
-                createPoll($pollName);
-                $pollFound = false;
-                $pollId = checkPollId($pollName);
-            }
-
-            $pollId = $pollId['id'];
-
-            if ($pollFound) {
-                removeOldData($pollId);
-            }
-
-            $dataArray = $poll->parties;
-            foreach ($dataArray as $data) {
-                $partyName = $data->Partij;
-                if (!$partyName) {
-                    break;
-                }
-                $partyId = checkPartyId($partyName);
-
-                if (!$partyId) {
-                    createParty($partyName);
+            if ($pollName === "Eerste kamer"){
+                foreach ($poll->parties as $data){
+                    $partyName = $data->Partij;
+                    if (!$partyName) {
+                        break;
+                    }
                     $partyId = checkPartyId($partyName);
+                    addFirstChamber($partyId['id'], $data->Zetels);
                 }
-                $partyId = $partyId['id'];
-                $chairs = $data->Zetels;
-                createPartyPoll($partyId, $pollId, $chairs);
+            }else {
+                $pollId = checkPollId($pollName);
+                $pollFound = true;
+
+                if (!$pollId) {
+                    createPoll($pollName);
+                    $pollFound = false;
+                    $pollId = checkPollId($pollName);
+                }
+
+                $pollId = $pollId['id'];
+
+                if ($pollFound) {
+                    removeOldData($pollId);
+                }
+
+                $dataArray = $poll->parties;
+                foreach ($dataArray as $data) {
+                    $partyName = $data->Partij;
+                    if (!$partyName) {
+                        break;
+                    }
+                    $partyId = checkPartyId($partyName);
+
+                    if (!$partyId) {
+                        createParty($partyName);
+                        $partyId = checkPartyId($partyName);
+                    }
+                    $partyId = $partyId['id'];
+                    $chairs = $data->Zetels;
+                    createPartyPoll($partyId, $pollId, $chairs);
+                }
             }
         }
         http_response_code(200);
         echo json_encode(['status' => 'OK']);
+
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['status' => 'error']);
@@ -116,6 +128,15 @@ function createPartyPoll(int $partyId, int $pollId, int $chairs): void
     $query->execute();
 }
 
+function addFirstChamber(int $id, int $chairs): void
+{
+    global $db;
+    $query = $db->prepare('UPDATE party SET first_chamber_chairs = :chairs WHERE id = :id');
+    $query->bindParam('chairs', $chairs);
+    $query->bindParam('id', $id);
+    $query->execute();
+}
+
 function getAllPolls(): string|array
 {
     try {
@@ -134,7 +155,7 @@ function getAllPartyOrdered($id): string|array
 {
     try {
         global $db;
-        $query = $db->prepare('SELECT p.name, pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
+        $query = $db->prepare('SELECT p.name, p.first_chamber_chairs ,pp.chairs FROM party_poll AS pp LEFT JOIN  party AS p ON p.id = pp.party_id WHERE pp.poll_id = :id ORDER BY chairs desc');
         $query->bindParam('id', $id);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);

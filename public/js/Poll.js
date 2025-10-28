@@ -6,9 +6,8 @@ class Poll {
     }
 
     createParties(partData) {
-
         partData.forEach((data) => {
-            this.parties.push(new Party(data.name, data.chairs));
+            this.parties.push(new Party(data.name, data.chairs, true, data.first_chamber_chairs));
         });
     }
 

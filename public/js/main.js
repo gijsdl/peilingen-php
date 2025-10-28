@@ -62,7 +62,7 @@ function showPolls() {
     titleCol.classList.add('col');
     titleRow.appendChild(titleCol);
     const title = document.createElement('h5');
-    title.textContent = 'Pollen';
+    title.textContent = 'Peilingen';
     titleCol.appendChild(title);
     wrapperCol.appendChild(titleRow);
 

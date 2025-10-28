@@ -47,7 +47,6 @@ function submitForm(e) {
                     body: JSON.stringify({token: token, polls: polls})
 
                 });
-                console.log(JSON.stringify({token: token, polls: polls}))
                 const content = await rawResponse.json();
 
                 if(content.status === 'OK'){
